@@ -11,6 +11,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+      - name: Download dataset
+        run: |
+          mkdir -p data
+          curl -o data/phishing.db https://techassessment.blob.core.windows.net/aiap22-assessment-data/phishing.db
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
