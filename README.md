@@ -1,7 +1,7 @@
 # Phishing Website Detection
 
 **Luvyn Louis Sequeira**  
-luvynsequeira@gmail.com
+luvyn_sequeira@mymail.sutd.edu.sg
 
 AIAP Batch 22 Technical Assessment
 
@@ -74,6 +74,27 @@ jupyter notebook eda.ipynb
    - Confusion matrix, ROC curve, feature importance plots
    - Saves best model and results
 
+## Feature Processing Summary
+
+| Feature | Type | Processing Method | Reason |
+|---------|------|-------------------|--------|
+| LineOfCode | Numeric | Median imputation → StandardScaler | 22.4% missing values (2,355 rows) |
+| LargestLineLength | Numeric | StandardScaler | No missing values |
+| NoOfURLRedirect | Numeric | StandardScaler | Strong predictor of phishing |
+| NoOfSelfRedirect | Numeric | StandardScaler | Low variance but kept |
+| NoOfPopup | Numeric | StandardScaler | Phishing indicator |
+| NoOfiFrame | Numeric | StandardScaler | Security risk indicator |
+| NoOfImage | Numeric | StandardScaler | Page complexity measure |
+| NoOfSelfRef | Numeric | StandardScaler | Internal navigation measure |
+| NoOfExternalRef | Numeric | StandardScaler | External linking behavior |
+| Robots | Binary | Keep as-is | Already 0/1 encoded |
+| IsResponsive | Binary | Keep as-is | Already 0/1 encoded |
+| DomainAgeMonths | Numeric | StandardScaler | Top feature - phishing sites are new |
+| Industry | Categorical | Frequency encoding | 59 unique values (high cardinality) |
+| HostingProvider | Categorical | Frequency encoding | 247 unique values (high cardinality) |
+
+**Note:** One-hot encoding would create 300+ sparse columns. Frequency encoding preserves information while keeping dimensionality manageable.
+
 ## Results
 
 From testing:
@@ -117,6 +138,44 @@ results/
   ├── feature_importance.png
   └── evaluation_metrics.txt
 ```
+
+## Deployment Considerations
+
+**Model Serving:**
+- Models saved as `.pkl` files (~5-10 MB total)
+- Fast inference: < 50ms per prediction on standard hardware
+- Can be deployed via REST API (Flask/FastAPI) or serverless functions
+- Supports both real-time single predictions and batch processing
+
+**Data Pipeline Requirements:**
+- Preprocessor must be loaded alongside model to ensure consistent feature transformations
+- New data must match training feature schema (14 features after preprocessing)
+- Missing values handled automatically via median imputation
+- Categorical features (Industry, HostingProvider) encoded using frequency mapping
+
+**Monitoring & Maintenance:**
+- Track prediction latency and throughput
+- Monitor feature drift, especially DomainAgeMonths (websites age over time)
+- Alert on low-confidence predictions (probability < 0.6)
+- Model retraining recommended every 3-6 months as phishing tactics evolve
+
+**Security & Privacy:**
+- Validate input features to prevent injection attacks
+- Log predictions with timestamps for audit trail
+- Consider implementing rate limiting for API deployment
+- No PII stored in model or predictions
+
+**Scalability:**
+- Stateless design enables horizontal scaling
+- Consider caching for frequently checked domains (TTL: 24h)
+- Batch prediction support for bulk URL scanning
+- Can handle ~1000 predictions/second on single CPU core
+
+**Edge Cases & Limitations:**
+- New hosting providers or industries not seen in training will be encoded as frequency 0
+- Very new domains (< 1 month) may be flagged as suspicious regardless of legitimacy
+- Model performs best on English-language websites (training data bias)
+- Does not analyze actual page content, only metadata features
 
 ---
 
