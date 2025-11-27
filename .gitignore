@@ -1,0 +1,34 @@
+# Database - DO NOT UPLOAD per assessment instructions
+data/phishing.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Models - will be regenerated when pipeline runs
+models/*.pkl
+
+# Results - will be regenerated
+results/*.png
+results/*.txt
+results/*.csv
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+

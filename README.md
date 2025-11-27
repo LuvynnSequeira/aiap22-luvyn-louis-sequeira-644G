@@ -72,7 +72,7 @@ The dataset contains 10,500 website samples with the following features:
 - `NoOfSelfRedirect`: Number of self-redirects
 - `NoOfPopup`: Number of pop-ups
 - `NoOfiFrame`: Number of iframes
-- `NoOfImage`: Number of images
+- `NoOfImage`: Number of images found in the website
 - `NoOfSelfRef`: Number of self-references
 - `NoOfExternalRef`: Number of external references
 - `Robots`: Whether website has robots.txt (0/1)
@@ -111,13 +111,17 @@ git clone https://github.com/YOUR-USERNAME/aiap22-NAME-NRIC.git
 cd aiap22-NAME-NRIC
 ```
 
-2. **Install dependencies:**
+2. **Download the database:**
+Download `phishing.db` from the assessment instructions and place it in the `data/` folder.
+```
+data/phishing.db
+```
+**Note:** The database file is not included in this repository as per assessment instructions.
+
+3. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
-
-3. **Verify data file:**
-Ensure `data/phishing.db` exists in the data folder.
 
 ---
 
